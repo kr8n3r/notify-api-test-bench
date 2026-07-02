@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notify API Test Bench</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="app">
+  <header class="app-header">
+    <div class="app-header__brand">
+      <span class="app-header__logo">🚀</span>
+      <h1 class="app-header__title">Notify API Test Bench</h1>
+    </div>
+    <div class="app-header__controls">
+      <div class="api-widget">
+        <label for="apiKey" class="api-widget__label">API Key</label>
+        <div class="api-widget__input-group">
+          <input type="password" id="apiKey" class="api-widget__input" placeholder="gds-team-key-..." autocomplete="off" />
+          <button type="button" id="toggleKeyVisibility" class="btn btn--ghost btn--xs" aria-pressed="false">show</button>
+        </div>
+        <span id="keyStatus" class="api-widget__status">not set</span>
+      </div>
+      <div class="env-switcher">
+        <span id="envPill" class="env-pill">PROD</span>
+        <select id="envSelect" class="env-switcher__select"></select>
+        <button type="button" id="manageEnvBtn" class="btn btn--icon">⚙️</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="workspace__sidebar"><nav id="methodNav" class="method-nav"></nav></aside>
+    <section class="workspace__editor">
+      <header class="method-header">
+        <div class="method-header__title-row">
+          <h2 id="methodTitle" class="method-header__title">Select a method</h2>
+          <button type="button" id="fillSmokeBtn" class="btn btn--secondary btn--sm">Fill smoke test data</button>
+        </div>
+        <p id="methodDesc" class="method-header__desc"></p>
+      </header>
+      <form id="methodForm" class="method-form"></form>
+      <div class="workspace__footer">
+        <button type="submit" form="methodForm" id="sendBtn" class="btn btn--primary btn--lg">
+          <span class="btn-spinner"></span>
+          <span class="btn-label">Send request</span>
+        </button>
+      </div>
+    </section>
+    <section class="workspace__inspector">
+      <header class="inspector__header">
+        <div class="tabs">
+          <button type="button" class="result-tab active" data-tab="response">Response</button>
+          <button type="button" class="result-tab" data-tab="request">Request</button>
+        </div>
+      </header>
+      <div class="inspector__body">
+        <div id="resultBody"><div class="empty-state"><p>No request sent yet.</p></div></div>
+      </div>
+    </section>
+  </main>
+
+  <template id="stampTemplate">
+    <div class="stamp">
+      <span class="stamp__code"></span>
+      <span class="stamp__label"></span>
+    </div>
+  </template>
+
+  <div id="envManager" class="modal" hidden>
+    <div class="modal__backdrop"></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="envManagerTitle">
+      <header class="modal__header">
+        <h3 id="envManagerTitle" class="modal__title">Manage Environments</h3>
+        <button type="button" id="closeEnvManagerBtn" class="modal__close" aria-label="Close">×</button>
+      </header>
+      <div class="modal__body">
+        <div id="envList" class="env-list"></div>
+        <div class="add-env">
+          <h4 class="add-env__title">Add environment</h4>
+          <div class="add-env__grid">
+            <input type="text" id="newEnvLabel" placeholder="Label, e.g. QA" />
+            <input type="text" id="newEnvUrl" placeholder="Base URL, e.g. https://qa-notify.example.com" />
+            <button type="button" id="newEnvAddBtn" class="btn btn--primary">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

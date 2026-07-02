@@ -1,0 +1,13 @@
+{
+  "name": "notify-api-test-bench",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "5.2.1",
+    "multer": "2.2.0",
+    "notifications-node-client": "8.4.0"
+  }
+}

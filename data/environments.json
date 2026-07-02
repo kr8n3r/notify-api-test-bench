@@ -1,0 +1,20 @@
+[
+  {
+    "id": "production",
+    "label": "Production",
+    "baseUrl": "https://api.notifications.service.gov.uk",
+    "builtIn": true
+  },
+  {
+    "id": "staging",
+    "label": "Staging",
+    "baseUrl": "https://api.staging-notify.works",
+    "builtIn": true
+  },
+  {
+    "id": "local",
+    "label": "Local",
+    "baseUrl": "http://notify-api.localhost:6011",
+    "builtIn": true
+  }
+]

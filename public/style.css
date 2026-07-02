@@ -1,0 +1,846 @@
+/* ==========================================================================
+   1. TOKENS & RESET
+   ========================================================================== */
+:root {
+   --bg-app: #0f172a;
+   --bg-surface: #1e293b;
+   --bg-surface-soft: #334155;
+   --bg-input: #0b0f19;
+
+   --text-main: #f8fafc;
+   --text-muted: #94a3b8;
+   --text-inverse: #0f172a;
+
+   --accent: #3b82f6;
+   --accent-hover: #2563eb;
+   --success: #10b981;
+   --warning: #f59e0b;
+   --danger: #ef4444;
+
+   --border: #334155;
+   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+   --font-sans: system-ui, -apple-system, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+   box-sizing: border-box;
+}
+
+body {
+   margin: 0;
+   background: var(--bg-app);
+   color: var(--text-main);
+   font-family: var(--font-sans);
+}
+
+/* ==========================================================================
+   2. CORE LAYOUT BLOCKS
+   ========================================================================== */
+.app {
+   display: flex;
+   flex-direction: column;
+   height: 100vh;
+   overflow: hidden;
+}
+
+.app-header {
+   height: 60px;
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   padding: 0 20px;
+   background: var(--bg-surface);
+   border-bottom: 1px solid var(--border);
+   z-index: 10;
+}
+
+.app-header__brand {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+}
+
+.app-header__logo {
+   font-size: 1.5rem;
+}
+
+.app-header__title {
+   font-size: 1.1rem;
+   margin: 0;
+   font-weight: 600;
+   letter-spacing: -0.02em;
+}
+
+.app-header__controls {
+   display: flex;
+   align-items: center;
+   gap: 24px;
+}
+
+.workspace {
+   display: grid;
+   grid-template-columns: 240px 1fr 1fr;
+   flex: 1;
+   height: calc(100vh - 60px);
+}
+
+.workspace__sidebar {
+   background: var(--bg-surface);
+   border-right: 1px solid var(--border);
+   overflow-y: auto;
+}
+
+.workspace__editor {
+   display: flex;
+   flex-direction: column;
+   padding: 24px;
+   overflow-y: auto;
+}
+
+.workspace__inspector {
+   background: #090d16;
+   border-left: 1px solid var(--border);
+   display: flex;
+   flex-direction: column;
+   overflow: hidden;
+}
+
+.workspace__footer {
+   margin-top: auto;
+   padding-top: 24px;
+}
+
+/* ==========================================================================
+   3. HEADER WIDGETS
+   ========================================================================== */
+.api-widget {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   font-size: 0.85rem;
+}
+
+.api-widget__label {
+   color: var(--text-muted);
+   font-weight: 500;
+}
+
+.api-widget__input-group {
+   display: flex;
+   align-items: center;
+   background: var(--bg-input);
+   border: 1px solid var(--border);
+   border-radius: 6px;
+   padding: 2px 6px;
+}
+
+.api-widget__input {
+   background: transparent;
+   border: none;
+   color: var(--text-main);
+   width: 140px;
+   font-family: var(--font-mono);
+   font-size: 0.8rem;
+   outline: none;
+}
+
+.api-widget__status {
+   font-size: 0.75rem;
+   padding: 2px 6px;
+   border-radius: 4px;
+   background: var(--bg-surface-soft);
+   color: var(--text-muted);
+   text-transform: uppercase;
+}
+
+.api-widget__status.set {
+   background: rgba(16, 185, 129, 0.15);
+   color: var(--success);
+}
+
+.env-switcher {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+}
+
+.env-switcher__select {
+   background: var(--bg-input);
+   color: var(--text-main);
+   border: 1px solid var(--border);
+   border-radius: 6px;
+   padding: 6px 10px;
+   font-size: 0.85rem;
+   outline: none;
+}
+
+.env-pill {
+   font-size: 0.7rem;
+   font-weight: 700;
+   padding: 3px 8px;
+   border-radius: 4px;
+   letter-spacing: 0.05em;
+}
+
+.env-production {
+   background: var(--success);
+   color: #022c22;
+}
+
+.env-staging {
+   background: var(--warning);
+   color: #451a03;
+}
+
+.env-local {
+   background: #6366f1;
+   color: #fff;
+}
+
+.env-custom {
+   background: var(--text-muted);
+   color: var(--text-inverse);
+}
+
+/* ==========================================================================
+   4. SIDEBAR NAVIGATION (JS Hooked)
+   ========================================================================== */
+.method-nav {
+   padding: 16px 12px;
+   display: flex;
+   flex-direction: column;
+   gap: 4px;
+}
+
+.nav-group-label {
+   font-size: 0.7rem;
+   text-transform: uppercase;
+   color: var(--text-muted);
+   font-weight: 700;
+   margin: 16px 0 6px 8px;
+   letter-spacing: 0.05em;
+}
+
+.nav-item {
+   width: 100%;
+   text-align: left;
+   background: transparent;
+   border: none;
+   color: var(--text-muted);
+   padding: 8px 12px;
+   border-radius: 6px;
+   font-size: 0.9rem;
+   cursor: pointer;
+   transition: all 0.15s;
+}
+
+.nav-item:hover {
+   background: var(--bg-surface-soft);
+   color: var(--text-main);
+}
+
+.nav-item.active {
+   background: var(--accent);
+   color: #fff;
+   font-weight: 500;
+}
+
+/* ==========================================================================
+   5. DYNAMIC FORM GENERATOR (JS Hooked)
+   ========================================================================== */
+.method-header {
+   margin-bottom: 24px;
+   border-bottom: 1px solid var(--border);
+   padding-bottom: 16px;
+}
+
+.method-header__title-row {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+
+.method-header__title {
+   margin: 0;
+   font-size: 1.5rem;
+}
+
+.method-header__desc {
+   color: var(--text-muted);
+   margin: 8px 0 0 0;
+   font-size: 0.9rem;
+   line-height: 1.5;
+}
+
+.method-header__desc code {
+   background: var(--bg-surface);
+   padding: 2px 6px;
+   border-radius: 4px;
+   color: #93c5fd;
+}
+
+.method-header__note {
+   display: block;
+   margin-top: 8px;
+   color: var(--text-muted);
+}
+
+.method-form {
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+}
+
+.field {
+   display: flex;
+   flex-direction: column;
+   gap: 6px;
+}
+
+.field label {
+   display: flex;
+   justify-content: space-between;
+   font-size: 0.85rem;
+   font-weight: 500;
+}
+
+.req-tag {
+   color: var(--danger);
+   font-size: 0.75rem;
+   text-transform: uppercase;
+}
+
+.opt-tag {
+   color: var(--text-muted);
+   font-size: 0.75rem;
+}
+
+.hint {
+   margin: 0;
+   font-size: 0.8rem;
+   color: var(--text-muted);
+}
+
+/* ==========================================================================
+   6. DYNAMIC WIDGETS: TEMPLATES & KV-LIST (JS Hooked)
+   ========================================================================== */
+.template-picker {
+   position: relative;
+}
+
+.template-picker-row {
+   display: flex;
+   gap: 8px;
+}
+
+.template-picker-row input {
+   flex: 1;
+}
+
+.template-panel {
+   display: none;
+   position: absolute;
+   top: 100%;
+   left: 0;
+   right: 0;
+   margin-top: 6px;
+   background: var(--bg-surface);
+   border: 1px solid var(--border);
+   border-radius: 8px;
+   max-height: 280px;
+   overflow-y: auto;
+   z-index: 50;
+   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+   padding: 8px;
+}
+
+/* Only show the picker when the open modifier is present */
+.template-panel--open {
+   display: block;
+}
+
+.picker-heading {
+   font-size: 0.75rem;
+   text-transform: uppercase;
+   color: var(--text-muted);
+   padding: 8px 8px 4px;
+   font-weight: 700;
+}
+
+.picker-empty,
+.picker-loading {
+   padding: 12px 8px;
+   font-size: 0.85rem;
+   color: var(--text-muted);
+   margin: 0;
+}
+
+.picker-row-main {
+   width: 100%;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 8px;
+   background: transparent;
+   border: none;
+   color: var(--text-main);
+   border-radius: 4px;
+   cursor: pointer;
+   text-align: left;
+}
+
+.picker-row-main:hover {
+   background: var(--bg-surface-soft);
+}
+
+.picker-row-label {
+   font-size: 0.85rem;
+   font-weight: 500;
+}
+
+.picker-row-id {
+   font-family: var(--font-mono);
+   font-size: 0.75rem;
+   color: var(--text-muted);
+}
+
+.template-save-form {
+   display: none;
+   gap: 8px;
+   margin-top: 8px;
+}
+
+.template-save-form--open {
+   display: flex;
+}
+
+.template-save-form input {
+   flex: 1;
+}
+
+.kv-list {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+
+.kv-rows {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+
+.kv-row {
+   display: flex;
+   gap: 8px;
+}
+
+.kv-key,
+.kv-value {
+   flex: 1;
+}
+
+.kv-remove {
+   background: var(--bg-surface-soft);
+   border: none;
+   color: var(--text-main);
+   width: 36px;
+   border-radius: 6px;
+   cursor: pointer;
+   font-size: 1.2rem;
+}
+
+.kv-add {
+   align-self: flex-start;
+   background: transparent;
+   border: 1px dashed var(--border);
+   color: var(--accent);
+   padding: 6px 12px;
+   border-radius: 6px;
+   cursor: pointer;
+   font-size: 0.85rem;
+}
+
+/* ==========================================================================
+   7. GLOBAL UI: INPUTS & BUTTONS
+   ========================================================================== */
+input,
+select {
+   background: var(--bg-input);
+   border: 1px solid var(--border);
+   border-radius: 6px;
+   padding: 10px 12px;
+   color: var(--text-main);
+   font-size: 0.9rem;
+   outline: none;
+   transition: border-color 0.15s;
+}
+
+input:focus,
+select:focus {
+   border-color: var(--accent);
+}
+
+input[type="file"] {
+   padding: 6px;
+   font-size: 0.8rem;
+}
+
+.btn {
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   gap: 8px;
+   border: none;
+   border-radius: 6px;
+   font-weight: 500;
+   cursor: pointer;
+   transition: all 0.15s;
+   font-size: 0.9rem;
+   padding: 8px 16px;
+}
+
+.btn--primary {
+   background: var(--accent);
+   color: #fff;
+   width: 100%;
+}
+
+.btn--primary:hover:not(:disabled) {
+   background: var(--accent-hover);
+}
+
+.btn--primary:disabled {
+   opacity: 0.5;
+   cursor: not-allowed;
+}
+
+.btn--secondary {
+   background: var(--bg-surface-soft);
+   color: var(--text-main);
+}
+
+.btn--secondary:hover {
+   background: #475569;
+}
+
+.btn--ghost {
+   background: transparent;
+   color: var(--text-muted);
+}
+
+.btn--ghost:hover {
+   color: var(--text-main);
+}
+
+.btn--icon {
+   background: transparent;
+   padding: 6px;
+   font-size: 1.1rem;
+}
+
+.btn--lg {
+   padding: 12px 24px;
+   font-size: 1rem;
+   font-weight: 600;
+}
+
+.btn--sm {
+   padding: 6px 12px;
+   font-size: 0.8rem;
+}
+
+.btn--xs {
+   padding: 2px 8px;
+   font-size: 0.75rem;
+}
+
+@keyframes spin {
+   to {
+      transform: rotate(360deg);
+   }
+}
+
+.btn-spinner {
+   display: none;
+   width: 16px;
+   height: 16px;
+   border: 2px solid rgba(255, 255, 255, 0.3);
+   border-top-color: #fff;
+   border-radius: 50%;
+   animation: spin 0.8s linear infinite;
+}
+
+.btn-spinner--visible {
+   display: inline-block;
+}
+
+/* ==========================================================================
+   8. INSPECTOR AREA (JS Hooked)
+   ========================================================================== */
+.inspector__header {
+   background: var(--bg-surface);
+   border-bottom: 1px solid var(--border);
+   padding: 0 16px;
+}
+
+.tabs {
+   display: flex;
+   gap: 16px;
+}
+
+.result-tab {
+   background: transparent;
+   border: none;
+   border-bottom: 2px solid transparent;
+   color: var(--text-muted);
+   padding: 14px 4px;
+   font-size: 0.85rem;
+   font-weight: 500;
+   cursor: pointer;
+}
+
+.result-tab.active {
+   color: var(--accent);
+   border-bottom-color: var(--accent);
+}
+
+.inspector__body {
+   padding: 20px;
+   overflow-y: auto;
+   flex: 1;
+   position: relative;
+}
+
+.empty-state {
+   height: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   color: var(--text-muted);
+}
+
+.result-meta {
+   display: flex;
+   gap: 10px;
+   margin-bottom: 16px;
+}
+
+.status-pill,
+.duration-pill {
+   font-family: var(--font-mono);
+   font-size: 0.75rem;
+   padding: 4px 8px;
+   border-radius: 4px;
+   font-weight: 600;
+}
+
+.status-pill.ok {
+   background: rgba(16, 185, 129, 0.15);
+   color: var(--success);
+}
+
+.status-pill.err {
+   background: rgba(239, 68, 68, 0.15);
+   color: var(--danger);
+}
+
+.duration-pill {
+   background: var(--bg-surface);
+   color: var(--text-muted);
+}
+
+.json-block {
+   margin: 0;
+   font-family: var(--font-mono);
+   font-size: 0.85rem;
+   line-height: 1.6;
+   white-space: pre-wrap;
+   word-break: break-all;
+}
+
+.json-key {
+   color: #93c5fd;
+}
+
+.json-string {
+   color: #86efac;
+}
+
+.json-number {
+   color: #fda4af;
+}
+
+.json-boolean {
+   color: #c4b5fd;
+}
+
+.json-null {
+   color: #64748b;
+   font-style: italic;
+}
+
+.stamp {
+   position: absolute;
+   bottom: 24px;
+   right: 24px;
+   border: 3px solid;
+   border-radius: 8px;
+   padding: 8px 16px;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   transform: rotate(-12deg);
+   opacity: 0.2;
+   pointer-events: none;
+   font-family: var(--font-mono);
+   font-weight: 900;
+   text-transform: uppercase;
+}
+
+.stamp.ok {
+   border-color: var(--success);
+   color: var(--success);
+}
+
+.stamp.err {
+   border-color: var(--danger);
+   color: var(--danger);
+}
+
+.stamp__code {
+   font-size: 1.8rem;
+   line-height: 1;
+}
+
+.stamp__label {
+   font-size: 0.65rem;
+   letter-spacing: 0.2em;
+}
+
+/* ==========================================================================
+   9. MODAL BLOCK
+   ========================================================================== */
+.modal {
+   position: fixed;
+   inset: 0;
+   z-index: 1000;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.modal[hidden] {
+   display: none !important;
+}
+
+.modal__backdrop {
+   position: absolute;
+   inset: 0;
+   background: rgba(11, 15, 25, 0.8);
+   backdrop-filter: blur(4px);
+}
+
+.modal__dialog {
+   position: relative;
+   background: var(--bg-surface);
+   border: 1px solid var(--border);
+   border-radius: 12px;
+   width: 90%;
+   max-width: 520px;
+   overflow: hidden;
+   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+}
+
+.modal__header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 16px 20px;
+   border-bottom: 1px solid var(--border);
+}
+
+.modal__title {
+   margin: 0;
+   font-size: 1.1rem;
+}
+
+.modal__close {
+   background: transparent;
+   border: none;
+   color: var(--text-muted);
+   font-size: 1.5rem;
+   cursor: pointer;
+   line-height: 1;
+}
+
+.modal__body {
+   padding: 20px;
+   display: flex;
+   flex-direction: column;
+   gap: 24px;
+   max-height: 80vh;
+   overflow-y: auto;
+}
+
+.env-list {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+
+.env-list-row {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   background: var(--bg-app);
+   padding: 10px 12px;
+   border-radius: 6px;
+   border: 1px solid var(--border);
+}
+
+.env-list-label {
+   font-weight: 600;
+   font-size: 0.9rem;
+}
+
+.env-list-url {
+   font-family: var(--font-mono);
+   font-size: 0.8rem;
+   color: var(--text-muted);
+}
+
+.env-list-remove {
+   background: transparent;
+   border: none;
+   color: var(--danger);
+   font-size: 1.2rem;
+   cursor: pointer;
+   padding: 0 4px;
+}
+
+.env-list-remove:disabled {
+   color: var(--border);
+   cursor: not-allowed;
+}
+
+.add-env {
+   border-top: 1px solid var(--border);
+   padding-top: 20px;
+}
+
+.add-env__title {
+   margin: 0 0 12px 0;
+   font-size: 0.85rem;
+   text-transform: uppercase;
+   color: var(--text-muted);
+   letter-spacing: 0.05em;
+}
+
+.add-env__grid {
+   display: grid;
+   grid-template-columns: 1fr 1.5fr auto;
+   gap: 8px;
+}
